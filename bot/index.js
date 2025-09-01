@@ -1,11 +1,27 @@
 require("dotenv").config();
+const express = require("express");
 const TelegramBot = require("node-telegram-bot-api");
 
 const token = process.env.BOT_TOKEN;
 const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID;
+const PORT = process.env.PORT || 3000;
+const URL = process.env.RENDER_EXTERNAL_URL;
 
-const bot = new TelegramBot(token, { polling: true });
+const app = express();
+const bot = new TelegramBot(token, { webHook: { port: PORT } });
 
+// Webhook URL o‘rnatish
+bot.setWebHook(`${URL}/bot${token}`);
+
+// Express route
+app.use(express.json());
+
+app.post(`/bot${token}`, (req, res) => {
+  bot.processUpdate(req.body);
+  res.sendStatus(200);
+});
+
+// Xabarlarni qayta ishlash
 bot.on("message", async (msg) => {
   const user = msg.from?.first_name || "Anonim";
   const message = msg.text;
@@ -47,13 +63,15 @@ bot.on("message", async (msg) => {
 
   if (msg.sticker) {
     const sticker = msg.sticker.file_id;
-    await bot.sendSticker(ADMIN_CHAT_ID, sticker, {
-      reply_markup: undefined,
-    });
+    await bot.sendSticker(ADMIN_CHAT_ID, sticker);
 
     await bot.sendMessage(
       ADMIN_CHAT_ID,
       `💬Guruh: ${groupName} \n 👤Yuboruvchi: ${user}`
     );
   }
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
