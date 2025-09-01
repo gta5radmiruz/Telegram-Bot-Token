@@ -24,11 +24,12 @@ bot.on("message", async (msg) => {
   const message = msg.text;
   const groupName = msg.chat.title || msg.chat.id;
 
-  if (msg.text)
+  if (msg.text) {
     await bot.sendMessage(
       ADMIN_CHAT_ID,
       `💬Guruh: ${groupName} \n 👤Yuboruvchi: ${user} \n 📩Xabar: ${message}`
     );
+  }
 
   if (msg.photo) {
     const photo = msg.photo[msg.photo.length - 1].file_id;
@@ -66,6 +67,13 @@ bot.on("message", async (msg) => {
       ADMIN_CHAT_ID,
       `💬Guruh: ${groupName} \n 👤Yuboruvchi: ${user}`
     );
+  }
+
+  if (msg.video_note) {
+    const videoNote = msg.video_note.file_id;
+    await bot.sendVideoNote(ADMIN_CHAT_ID, videoNote, {
+      caption: `💬Guruh: ${groupName} \n 👤Yuboruvchi: ${user}`,
+    });
   }
 });
 
