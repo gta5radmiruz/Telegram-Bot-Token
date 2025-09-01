@@ -10,10 +10,8 @@ const URL = process.env.RENDER_EXTERNAL_URL;
 const app = express();
 const bot = new TelegramBot(token, { webHook: { port: PORT } });
 
-// Webhook URL o‘rnatish
 bot.setWebHook(`${URL}/bot${token}`);
 
-// Express route
 app.use(express.json());
 
 app.post(`/bot${token}`, (req, res) => {
@@ -21,7 +19,6 @@ app.post(`/bot${token}`, (req, res) => {
   res.sendStatus(200);
 });
 
-// Xabarlarni qayta ishlash
 bot.on("message", async (msg) => {
   const user = msg.from?.first_name || "Anonim";
   const message = msg.text;
