@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 const URL = process.env.RENDER_EXTERNAL_URL;
 
 const app = express();
-const bot = new TelegramBot(token, { webHook: { port: PORT } });
+const bot = new TelegramBot(token, { webHook: true });
 
 bot.setWebHook(`${URL}/bot${token}`);
 
